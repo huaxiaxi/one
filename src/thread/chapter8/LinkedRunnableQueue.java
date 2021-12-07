@@ -46,6 +46,8 @@ public class LinkedRunnableQueue implements RunnableQueue{
 
     @Override
     public int size() {
-        return 0;
+        synchronized (runnableLinkedList){
+            return runnableLinkedList.size();
+        }
     }
 }
