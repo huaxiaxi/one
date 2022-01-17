@@ -1,3 +1,5 @@
+package oldSchool;
+
 import java.util.TreeSet;
 
 public class leetcode1675 {

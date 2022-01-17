@@ -1,3 +1,5 @@
+package oldSchool;
+
 public class leetcode1694 {
     public static String resetPhoneNumbers(String s){
         String res = "";

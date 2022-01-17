@@ -1,3 +1,5 @@
+package oldSchool;
+
 public class leetcode1653 {
     public static int minDelOperate(String s){
         int cb = 0;

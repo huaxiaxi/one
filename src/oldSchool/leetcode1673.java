@@ -1,3 +1,5 @@
+package oldSchool;
+
 import java.util.Stack;
 
 public class leetcode1673 {

@@ -1,3 +1,5 @@
+package oldSchool;
+
 public class leetcode1652 {
     public static int[] dismantleBoom(int[] arr, int k){
         int l = arr.length;

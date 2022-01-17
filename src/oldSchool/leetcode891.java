@@ -1,3 +1,5 @@
+package oldSchool;
+
 import java.util.*;
 
 public class leetcode891 {
