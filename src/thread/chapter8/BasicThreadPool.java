@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BasicThreadPool extends Thread implements ThreadPool{
-
     private final int initSize;
     private final int maxSize;
     private final int coreSize;
@@ -19,7 +18,6 @@ public class BasicThreadPool extends Thread implements ThreadPool{
     private final static ThreadFactory DEFAULT_THREAD_FACTORY = new DefaultThreadFactory();
     private final long keepAliveTime;
     private final TimeUnit timeUnit;
-
 
      public BasicThreadPool(int initSize, int maxSize, int coreSize, int queueSize) {
         this(initSize, maxSize, coreSize, DEFAULT_THREAD_FACTORY, queueSize, DEFAULT_DENY_POLICY,
@@ -46,9 +44,6 @@ public class BasicThreadPool extends Thread implements ThreadPool{
         }
     }
 
-
-
-
     private void newThread() {
          InternalTask internalTask = new InternalTask(runnableQueue);
          Thread thread = this.threadFactory.createThread(internalTask);
@@ -72,41 +67,131 @@ public class BasicThreadPool extends Thread implements ThreadPool{
         this.runnableQueue.offer(runnable);
     }
 
+//    @Override
+//    public void run()
+//    {
+//        while (!isShutdown && !isInterrupted())
+//        {
+//            try
+//            {
+//                timeUnit.sleep(keepAliveTime);
+//            } catch (InterruptedException e)
+//            {
+//                isShutdown = true;
+//                break;
+//            }
+//
+//            synchronized (this)
+//            {
+//                if (isShutdown)
+//                    break;
+//                System.out.println(runnableQueue.size() + "==" + activeCount);
+//                if (runnableQueue.size() > 0 && activeCount < coreSize)
+//                {
+//                    for (int i = initSize; i < coreSize; i++)
+//                    {
+//                        System.out.println("--create");
+//                        newThread();
+//                    }
+//                    continue;
+//                }
+//
+//                if (runnableQueue.size() > 0 && activeCount < maxSize)
+//                {
+//                    for (int i = coreSize; i < maxSize; i++)
+//                    {
+//                        newThread();
+//                    }
+//                }
+//
+//                if (runnableQueue.size() == 0 && activeCount > coreSize)
+//                {
+//                    for (int i = coreSize; i < activeCount; i++)
+//                    {
+//                        removeThread();
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+
+    private static class ThreadTask {
+         public ThreadTask(Thread thread, InternalTask internalTask){
+             this.thread = thread;
+             this.internalTask = internalTask;
+         }
+        Thread thread;
+        InternalTask internalTask;
+    }
+
+    private static class DefaultThreadFactory implements ThreadFactory {
+         private static final AtomicInteger GROUP_COUNTER = new AtomicInteger(1);
+         private static final ThreadGroup group = new ThreadGroup("MyThreadPool-" + GROUP_COUNTER.getAndDecrement());
+         private static final AtomicInteger COUNTER = new AtomicInteger(0);
+        @Override
+        public Thread createThread(Runnable runnable) {
+            return new Thread(group, runnable, "thread-pool-" + COUNTER.getAndDecrement());
+        }
+    }
+
+
+
+
     @Override
     public void shutdown() {
-
+         synchronized (this){
+             if (isShutdown){
+                 return;
+             }
+             isShutdown = true;
+             threadQueue.forEach(threadTask -> {
+                 threadTask.internalTask.stop();
+                 threadTask.thread.interrupt();
+             });
+             this.interrupt();
+         }
     }
 
     @Override
     public int getInitSize() {
-        return 0;
+         if (isShutdown)
+             throw new IllegalStateException("The thread pool is destroy.");
+        return this.initSize;
     }
 
     @Override
     public int getMaxSize() {
-        return 0;
+        if (isShutdown)
+            throw new IllegalStateException("The thread pool is destroy.");
+        return this.maxSize;
     }
 
     @Override
     public int getCoreSize() {
-        return 0;
+        if (isShutdown)
+            throw new IllegalStateException("The thread pool is destroy.");
+        return this.coreSize;
     }
 
     @Override
     public int getActiveCount() {
-        return 0;
+         synchronized (this){
+             return this.activeCount;
+         }
     }
 
     @Override
     public int getQueueSize() {
-        return 0;
+        if (isShutdown)
+            throw new IllegalStateException("The thread pool is destroy.");
+        return runnableQueue.size();
     }
 
     @Override
     public boolean isShutdown() {
-        return false;
+        return this.isShutdown;
     }
-
     @Override
     public void run(){
          while (!isShutdown && !isInterrupted()){
@@ -120,8 +205,10 @@ public class BasicThreadPool extends Thread implements ThreadPool{
                  if (isShutdown) {
                      break;
                  }
+                 System.out.println(runnableQueue.size() + "==" + activeCount);
                  if (runnableQueue.size() > 0 && activeCount < coreSize){
                      for (int i = initSize; i < coreSize; i++) {
+                         System.out.println("--create");
                          newThread();
                      }
                      continue;
@@ -139,22 +226,5 @@ public class BasicThreadPool extends Thread implements ThreadPool{
              }
          }
     }
-    private static class ThreadTask {
-         Thread thread;
-         InternalTask internalTask;
-         public ThreadTask(Thread thread, InternalTask internalTask){
-             this.thread = thread;
-             this.internalTask = internalTask;
-         }
-    }
 
-    private static class DefaultThreadFactory implements ThreadFactory {
-         private static final AtomicInteger GROUP_COUNTER = new AtomicInteger(1);
-         private static final ThreadGroup group = new ThreadGroup("MyThreadPool-" + GROUP_COUNTER.getAndDecrement());
-         private static final AtomicInteger COUNTER = new AtomicInteger(0);
-        @Override
-        public Thread createThread(Runnable runnable) {
-            return new Thread(group, runnable, "thread-pool-", COUNTER.getAndDecrement());
-        }
-    }
 }
