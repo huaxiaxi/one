@@ -35,7 +35,7 @@ public class B003_reverse_list_node {
         ListNode cur = node;
         ListNode pre = null;
         ListNode next = null;
-        while (cur.next != null){
+        while (cur != null){
             next = cur.next;
             cur.next = pre;
             pre = cur;
