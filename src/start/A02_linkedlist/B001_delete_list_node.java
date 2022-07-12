@@ -2,7 +2,9 @@ package start.A02_linkedlist;
 
 import java.util.Scanner;
 
-public class B001_delete_linkedlist_element {
+import static start.A02_linkedlist.ListNode.printListNode;
+
+public class B001_delete_list_node {
     public static void main(String[] args) {
         while (true) {
             Scanner sc = new Scanner(System.in);
@@ -82,16 +84,6 @@ public class B001_delete_linkedlist_element {
             cur = cur.next;
         }
         return head;
-    }
-    public static void printListNode(ListNode head) {
-        if (head == null){
-            System.out.println(-1);
-            return;
-        }
-        while (head != null){
-            System.out.print(head.val + " ");
-            head = head.next;
-        }
     }
 
     public static ListNode arrayTransLinkedList(int[] arr) {
