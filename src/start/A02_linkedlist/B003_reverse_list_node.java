@@ -23,11 +23,11 @@ public class B003_reverse_list_node {
                 arr[i] = Integer.parseInt(arrStr[i]);
             }
             ListNode head = arrayTransLinkedList(arr);
-            ListNode result = reverseLinkedList(head);
+            ListNode result = reverseLinkedList2(head);
             printListNode(result);
         }
     }
-
+// 双指针法
     private static ListNode reverseLinkedList(ListNode node) {
         if (node == null || node.next == null ){
             return node;
@@ -44,6 +44,19 @@ public class B003_reverse_list_node {
         return pre;
     }
 
+//  递归法1：
+
+
+//  递归法2：从后往前
+    private static ListNode reverseLinkedList2(ListNode node) {
+        if (node == null || node.next == null) {
+            return node;
+        }
+        ListNode last = reverseLinkedList2(node.next);
+        node.next.next = node;
+        node.next = null;
+        return last;
+    }
 
     public static ListNode arrayTransLinkedList(int[] arr) {
         ListNode head = new ListNode(arr[0]);
