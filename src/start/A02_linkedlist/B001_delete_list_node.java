@@ -2,6 +2,7 @@ package start.A02_linkedlist;
 
 import java.util.Scanner;
 
+import static start.A02_linkedlist.ListNode.arrayTransLinkedList;
 import static start.A02_linkedlist.ListNode.printListNode;
 
 public class B001_delete_list_node {
@@ -86,16 +87,6 @@ public class B001_delete_list_node {
         return head;
     }
 
-    public static ListNode arrayTransLinkedList(int[] arr) {
-        ListNode head = new ListNode(arr[0]);
-        ListNode next = head;
-        for (int i = 1; i < arr.length; i++) {
-            ListNode node = new ListNode(arr[i]);
-            next.next = node;
-            next = node;
-        }
-        return head;
-    }
 
 
 }

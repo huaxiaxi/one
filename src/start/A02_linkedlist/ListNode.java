@@ -24,4 +24,14 @@ public class ListNode {
             head = head.next;
         }
     }
+    public static ListNode arrayTransLinkedList(int[] arr) {
+        ListNode head = new ListNode(arr[0]);
+        ListNode next = head;
+        for (int i = 1; i < arr.length; i++) {
+            ListNode node = new ListNode(arr[i]);
+            next.next = node;
+            next = node;
+        }
+        return head;
+    }
 }

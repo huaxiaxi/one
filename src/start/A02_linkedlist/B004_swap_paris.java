@@ -5,7 +5,7 @@ import java.util.Scanner;
 import static start.A02_linkedlist.ListNode.arrayTransLinkedList;
 import static start.A02_linkedlist.ListNode.printListNode;
 
-public class B003_reverse_list_node {
+public class B004_swap_paris {
     public static void main(String[] args) {
         while (true) {
             Scanner sc = new Scanner(System.in);
@@ -24,52 +24,38 @@ public class B003_reverse_list_node {
                 arr[i] = Integer.parseInt(arrStr[i]);
             }
             ListNode head = arrayTransLinkedList(arr);
-            ListNode result = reverseLinkedList2(head);
+            ListNode result = swapPairsLinkedList1(head);
             printListNode(result);
         }
     }
 // 双指针法
-    private static ListNode reverseLinkedList(ListNode node) {
-        if (node == null || node.next == null ){
-            return node;
-        }
-        ListNode cur = node;
-        ListNode pre = null;
+    private static ListNode swapPairsLinkedList(ListNode node) {
+        ListNode head = new ListNode(-1, node);
+        ListNode pre = head;
+        ListNode cur = null;
         ListNode next = null;
-        while (cur != null){
-            next = cur.next;
-            cur.next = pre;
+        while (pre.next != null && pre.next.next != null){
+            cur = pre.next;
+            next = pre.next.next;
+            cur.next = next.next;
+            next.next = cur;
+            pre.next = next;
             pre = cur;
-            cur = next;
         }
-        return pre;
+        return head.next;
     }
-
-//  递归法1：
-    private static ListNode reverseLinkedList1(ListNode node) {
-        return reverse(null, node);
-    }
-
-    private static ListNode reverse(ListNode pre, ListNode cur) {
-        if (cur == null) {
-            return pre;
-        }
-        ListNode temp = null;
-        temp = cur.next;
-        cur.next = pre;
-        return reverse(cur, temp);
-    }
-
-//  递归法2：从后往前
-    private static ListNode reverseLinkedList2(ListNode node) {
+    // 迭代法
+    private static ListNode swapPairsLinkedList1(ListNode node) {
         if (node == null || node.next == null) {
             return node;
         }
-        ListNode last = reverseLinkedList2(node.next);
-        node.next.next = node;
-        node.next = null;
-        return last;
+        ListNode next = node.next;
+        ListNode newNode = swapPairsLinkedList1(next.next);
+        next.next = node;
+        node.next = newNode;
+        return next;
     }
+
 
 
 
