@@ -56,6 +56,21 @@ public class B004_swap_paris {
         return next;
     }
 
+    // 双指针法2
+    private static ListNode swapPairsLinkedList2(ListNode node) {
+        ListNode dummyNode = new ListNode(-1, node);
+        ListNode pre = dummyNode;
+        while (pre.next != null && pre.next.next != null){
+            ListNode temp = pre.next.next;
+            pre.next = node.next;
+            node.next.next = node;
+            node.next = temp;
+            pre = node;
+            node = node.next;
+        }
+        return dummyNode.next;
+    }
+
 
 
 
