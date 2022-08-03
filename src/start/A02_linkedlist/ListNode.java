@@ -26,6 +26,19 @@ public class ListNode {
             head = head.next;
         }
     }
+    public static void printListNode(ListNode head, int printCount) {
+        if (head == null){
+            System.out.println(-1);
+            return;
+        }
+        int start = 0;
+        while (head != null && start < printCount){
+            System.out.print(head.val + " ");
+            head = head.next;
+            start++;
+        }
+    }
+
     public static ListNode arrayTransLinkedList(int[] arr) {
         ListNode head = new ListNode(arr[0]);
         ListNode next = head;
